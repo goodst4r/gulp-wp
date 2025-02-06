@@ -1,0 +1,8 @@
+/* header
+--------------------------- */
+@use "./../foundation/base" as *;
+@use "./../foundation/mixin" as *;
+
+.l-header {
+  display: block;
+}

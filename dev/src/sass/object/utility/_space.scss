@@ -1,0 +1,49 @@
+/* space
+--------------------------- */
+
+@use "./../../foundation/mixin" as *;
+
+@mixin spaceCalc() {
+  $contexts: (
+    m: margin,
+    p: padding,
+  );
+
+  @each $c-key, $context in $contexts {
+    &#{$c-key} {
+      $directions: (
+        t: top,
+        b: bottom,
+        l: left,
+        r: right,
+        x: '',
+        y: ''
+      );
+
+      @each $d-key, $direction in $directions {
+        $base-numbers: (5, 8); // 基本となる数字のリスト
+        $max-multiplier: 40;   // 最大の倍数
+
+        @each $base-number in $base-numbers {
+          @for $i from 1 through $max-multiplier {
+            $amount: $base-number * $i;
+            &#{$d-key}-#{$amount} {
+              @if ($d-key == "x") {
+                #{$context}-right: #{$amount}px !important;
+                #{$context}-left: #{$amount}px !important;
+              }
+              @else if ($d-key == "y") {
+                #{$context}-top: #{$amount}px !important;
+                #{$context}-bottom: #{$amount}px !important;
+              }
+              @else {
+                #{$context}-#{$direction}: #{$amount}px !important;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+/* mixin
+--------------------------- */
+@use "sass:math";
+
+@mixin breakpoint($point) {
+  @if $point == sp-small {
+    @media (max-width: 389px) {
+      @content;
+    }
+  }
+  @if $point == sp {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+  @if $point == sp-tab {
+    @media screen and (max-width: 840px) {
+      @content;
+    }
+  }
+  @if $point == tab {
+    @media screen and (min-width: 601px) and (max-width: 840px) {
+      @content;
+    }
+  }
+  @if $point == pc-small {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  }
+  @if $point == pc {
+    @media (min-width: 841px) {
+      @content;
+    }
+  }
+}
+
+@mixin fz($minFontPxSize, $maxFontPxSize) {
+  // 共通で使用しているscss変数
+  $fontSizeDefault: 16; // body要素で表示しているfont-size
+  $sizeDefaultPc: 1280; // 最大ウィンドウサイズの指定
+  $sizeSm: 390; // 最小ウィンドウサイズの指定
+
+  $minFontRemSize: math.div($minFontPxSize, $fontSizeDefault);
+  $maxFontRemSize: math.div($maxFontPxSize, $fontSizeDefault);
+  $variablePart: math.div(
+    $maxFontPxSize - $minFontPxSize,
+    $sizeDefaultPc - $sizeSm
+  );
+  $variableSize: roundToDecimal(
+    math.div($maxFontPxSize - $sizeDefaultPc * $variablePart, $fontSizeDefault),
+    3
+  );
+  font-size: clamp(
+    #{$minFontRemSize}rem,
+    #{$variableSize}rem + #{roundToDecimal($variablePart, 4) * 100}vw,
+    #{$maxFontRemSize}rem
+  );
+}
+
+@mixin lh($font-size: 16, $lines: 24) {
+  line-height: calc(#{$lines} / #{$font-size});
+}
