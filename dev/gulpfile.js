@@ -3,6 +3,7 @@ const { series, watch, src, dest } = gulp;
 const sassCompiler = require('sass');
 const gulpSass = require('gulp-sass')(sassCompiler);
 const autoprefixer = require('autoprefixer');
+const cleanCSS = require('gulp-clean-css');
 const postcss = require('gulp-postcss');
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
@@ -69,6 +70,7 @@ const compileSass = () => {
     .pipe(plumber({ errorHandler: notify.onError('Sass Error: <%= error.message %>') }))
     .pipe(gulpSass({ outputStyle: 'compressed' }).on('error', gulpSass.logError))
     .pipe(postcss([autoprefixer()]))
+    .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(dest(paths.sass.dist))
     .pipe(browserSync.stream());
