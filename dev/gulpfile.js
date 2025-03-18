@@ -148,8 +148,8 @@ const deploytest = () => {
   return src(['../**', '!../dev/**', '!../node_modules/**', '!../.git/**'])
     .pipe(rsync({
       root: '../',
-      hostname: 'xgvcdevelop',
-      destination: '/home/gvcdevelop/gvcdevelop.xsrv.jp/public_html/sk-tire-service/wp-content/themes/sk-tire-service',
+      hostname: 'hostname',
+      destination: 'ディレクトリ',
       ssh: true,
       archive: true,
       compress: true,
@@ -164,8 +164,8 @@ const deployprod = () => {
   return src(['../**', '!../dev/**', '!../node_modules/**', '!../.git/**'])
     .pipe(rsync({
       root: '../',
-      hostname: 'xserver2',
-      destination: '/home/gvc2/sk-tire-service.com/public_html/wp-content/themes/sk-tire-service',
+      hostname: 'hostname',
+      destination: 'ディレクトリ',
       ssh: true,
       archive: true,
       compress: true,
