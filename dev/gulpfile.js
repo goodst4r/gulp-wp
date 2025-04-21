@@ -17,9 +17,12 @@ const pngquant = require('imagemin-pngquant');
 const mozjpeg = require('imagemin-mozjpeg');
 const imageminGif = require('imagemin-gifsicle');
 const imageminSvg = require('imagemin-svgo');
+const imageminWebp = require('imagemin-webp');
 const cached = require('gulp-cached');
 const rsync = require('gulp-rsync');
 const rename = require('gulp-rename');
+const webp = require('gulp-webp');
+const newer = require('gulp-newer');
 
 // コマンドラインオプションの設定
 const options = minimist(process.argv.slice(2), {
@@ -89,7 +92,7 @@ const minifyJs = () => {
 // 画像圧縮タスク
 const imageMin = () => {
   return src(paths.images.src)
-    .pipe(require('gulp-newer')(paths.images.dist))
+    .pipe(newer(paths.images.dist))
     .pipe(cached('images'))
     .pipe(plumber({ errorHandler: notify.onError('Image Error: <%= error.message %>') }))
     .pipe(imagemin([
@@ -98,6 +101,15 @@ const imageMin = () => {
       imageminGif({ interlaced: false, optimizationLevel: 3, colors: 180 }),
       imageminSvg()
     ]))
+    .pipe(dest(paths.images.dist));
+};
+
+const convertWebp = () => {
+  return src(paths.images.src)
+    .pipe(newer({ dest: paths.images.dist, ext: '.webp' }))
+    .pipe(cached('webp'))
+    .pipe(plumber({ errorHandler: notify.onError('WebP Error: <%= error.message %>') }))
+    .pipe(webp({ quality: 85 }))
     .pipe(dest(paths.images.dist));
 };
 
@@ -176,7 +188,7 @@ const deployprod = () => {
 };
 
 // デフォルトタスク（SCSS, JS, 画像圧縮、BrowserSync、監視）
-exports.default = series(compileSass, minifyJs, imageMin, videoMin, browserSyncTask, watchFiles);
+exports.default = series(compileSass, minifyJs, imageMin, convertWebp, videoMin, browserSyncTask, watchFiles);
 
 // デプロイタスク（必要に応じて両方実行）
 exports.deploy = series(deploytest, deployprod);
@@ -186,6 +198,7 @@ exports.deployprod = deployprod;
 // 必要に応じて個別タスクもエクスポート可能
 exports.compileSass = compileSass;
 exports.minifyJs = minifyJs;
+exports.convertWebp = convertWebp;
 exports.imageMin = imageMin;
 exports.watchFiles = watchFiles;
 exports.browserSyncTask = browserSyncTask;
