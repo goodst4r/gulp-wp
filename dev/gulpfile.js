@@ -153,47 +153,47 @@ const watchFiles = () => {
 
 
 // 除外パターンの設定
-const excludePatterns = ['.DS_Store', 'dev', 'node_modules', '.git'];
+// const excludePatterns = ['.DS_Store', 'dev', 'node_modules', '.git'];
 
 // テスト環境へのデプロイタスク
-const deploytest = () => {
-  return src(['../**', '!../dev/**', '!../node_modules/**', '!../.git/**'])
-    .pipe(rsync({
-      root: '../',
-      hostname: 'hostname',
-      destination: 'ディレクトリ',
-      ssh: true,
-      archive: true,
-      compress: true,
-      recursive: true,
-      clean: true,
-      exclude: excludePatterns
-    }));
-};
+// const deploytest = () => {
+//   return src(['../**', '!../dev/**', '!../node_modules/**', '!../.git/**'])
+//     .pipe(rsync({
+//       root: '../',
+//       hostname: 'hostname',
+//       destination: 'ディレクトリ',
+//       ssh: true,
+//       archive: true,
+//       compress: true,
+//       recursive: true,
+//       clean: true,
+//       exclude: excludePatterns
+//     }));
+// };
 
 // 本番環境へのデプロイタスク
-const deployprod = () => {
-  return src(['../**', '!../dev/**', '!../node_modules/**', '!../.git/**'])
-    .pipe(rsync({
-      root: '../',
-      hostname: 'hostname',
-      destination: 'ディレクトリ',
-      ssh: true,
-      archive: true,
-      compress: true,
-      recursive: true,
-      clean: true,
-      exclude: excludePatterns
-    }));
-};
+// const deployprod = () => {
+//   return src(['../**', '!../dev/**', '!../node_modules/**', '!../.git/**'])
+//     .pipe(rsync({
+//       root: '../',
+//       hostname: 'hostname',
+//       destination: 'ディレクトリ',
+//       ssh: true,
+//       archive: true,
+//       compress: true,
+//       recursive: true,
+//       clean: true,
+//       exclude: excludePatterns
+//     }));
+// };
 
 // デフォルトタスク（SCSS, JS, 画像圧縮、BrowserSync、監視）
 exports.default = series(compileSass, minifyJs, imageMin, convertWebp, videoMin, browserSyncTask, watchFiles);
 
 // デプロイタスク（必要に応じて両方実行）
-exports.deploy = series(deploytest, deployprod);
-exports.deploytest = deploytest;
-exports.deployprod = deployprod;
+// exports.deploy = series(deploytest, deployprod);
+// exports.deploytest = deploytest;
+// exports.deployprod = deployprod;
 
 // 必要に応じて個別タスクもエクスポート可能
 exports.compileSass = compileSass;
