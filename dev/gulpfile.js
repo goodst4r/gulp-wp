@@ -23,6 +23,7 @@ const rsync = require('gulp-rsync');
 const rename = require('gulp-rename');
 const webp = require('gulp-webp');
 const newer = require('gulp-newer');
+const git = require('gulp-git');
 
 // コマンドラインオプションの設定
 const options = minimist(process.argv.slice(2), {
@@ -54,6 +55,21 @@ const paths = {
   php: {
     src: '../**/*.php'
   }
+};
+
+// Git Pull タスク
+const gitPull = (done) => {
+  console.log('\x1b[36m%s\x1b[0m', '🔄 Git Pull 開始中...');
+
+  git.pull('origin', 'main', { args: '' }, (err) => {
+    if (err) {
+      console.error('\x1b[31m%s\x1b[0m', '❌ Git Pull エラー:', err);
+      done(new Error('Git Pull に失敗しました。')); // ← ここで中断
+    } else {
+      console.log('\x1b[32m%s\x1b[0m', '✅ Git Pull 完了しました！');
+      done();
+    }
+  });
 };
 
 // Video タスク
@@ -188,7 +204,16 @@ const watchFiles = () => {
 // };
 
 // デフォルトタスク（SCSS, JS, 画像圧縮、BrowserSync、監視）
-exports.default = series(compileSass, minifyJs, imageMin, convertWebp, videoMin, browserSyncTask, watchFiles);
+exports.default = series(
+  gitPull,
+  compileSass,
+  minifyJs,
+  imageMin,
+  convertWebp,
+  videoMin,
+  browserSyncTask,
+  watchFiles
+);
 
 // デプロイタスク（必要に応じて両方実行）
 // exports.deploy = series(deploytest, deployprod);
@@ -202,3 +227,5 @@ exports.convertWebp = convertWebp;
 exports.imageMin = imageMin;
 exports.watchFiles = watchFiles;
 exports.browserSyncTask = browserSyncTask;
+
+exports.gitpull = gitPull;
